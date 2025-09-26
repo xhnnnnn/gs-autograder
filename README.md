@@ -6,13 +6,19 @@ This repository contains a minimal example of a Gradescope autograder for R assi
 ```
 
 .
-├── Dockerfile            # Build the autograder image
-├── run_autograder        # Entry script for Gradescope
-└── source/
-├── grade.R           # Main grading logic (calls tests)
-├── tests.R           # testthat tests
-├── answers.RDS       # Reference answers
-└── HW05data.RData    # Example dataset
+├─ Dockerfile              # Docker image 
+├─ run_autograder          # Entry script; Gradescope calls this
+├─ source/                 
+│  ├─ grade.R              # Main grading script; 
+│  ├─ tests.R              # testthat tests 
+│  ├─ answers.RDS          
+│  └─ HW05data.RData       # if needed 
+├─ local_submit/           # Local folder to simulate a student's submission (not uploaded)
+├─ results/                # Output folder; must contain results.json after grading
+├─ .gitattributes          
+├─ .gitignore              
+└─ README.md               
+
 
 ````
 

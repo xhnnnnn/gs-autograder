@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+set -euo pipefail
+echo ">>> run_autograder: start"
+
+echo ">>> ensure results dir"
+mkdir -p /autograder/results
+
+echo ">>> copy hidden resources into submission"
+cp /autograder/source/answers.RDS    /autograder/submission/ || true
+cp /autograder/source/HW05data.RData /autograder/submission/ || true
+ls -lah /autograder/submission || true
+
+echo ">>> run Rscript"
+Rscript /autograder/source/grade.R
+
+echo ">>> run_autograder: done"

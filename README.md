@@ -4,7 +4,6 @@ This repository contains a minimal example of a Gradescope autograder for R assi
 
 ## Directory Structure
 ```
-
 .
 ├─ Dockerfile              # Docker image 
 ├─ run_autograder          # Entry script; Gradescope calls this
@@ -18,7 +17,6 @@ This repository contains a minimal example of a Gradescope autograder for R assi
 ├─ .gitattributes          
 ├─ .gitignore              
 └─ README.md               
-
 
 ````
 

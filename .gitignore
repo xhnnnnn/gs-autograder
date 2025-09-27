@@ -1,4 +1,11 @@
+# R / OS artifacts
 .Rhistory
 .Rproj.user/
+.RData
+.Ruserdata
 .DS_Store
 Thumbs.db
+
+# Local grading artifacts
+local_submit/
+results/

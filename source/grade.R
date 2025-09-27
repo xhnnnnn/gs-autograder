@@ -1,30 +1,24 @@
-# grade.R
+# grade.R — HW6 minimal runner (Gradescope/Docker compatible)
 
 suppressPackageStartupMessages(library(gradeR))
 
-# Always work in submission so tests can read answers.RDS etc.
+# Always run inside the submission directory
 setwd("/autograder/submission")
 
-student_in  <- "HW05_TidyPart01.R"
+# Student script name must match the assignment spec
+student_in  <- "HW06_TidyPart02.R"
 tests_path  <- "/autograder/source/tests.R"
 results_dst <- "/autograder/results/results.json"
 
 stopifnot(file.exists(student_in), file.exists(tests_path))
 
-# Let tests.R read the student's raw source text (absolute path)
-Sys.setenv(GS_STUDENT_FILE = normalizePath(student_in, winslash = "/", mustWork = FALSE))
+# Expose the absolute path of the student script to tests.R (for string checks)
+Sys.setenv(GS_STUDENT_FILE = normalizePath(student_in, winslash = "/", mustWork = TRUE))
 
-# If hidden data exists, run it in the same environment as the student's code/tests:
-tmp <- "HW05_TidyPart01.withdata.R"
-hdr <- if (file.exists("HW05data.RData")) "load('HW05data.RData')" else NULL
-writeLines(c(hdr, readLines(student_in, warn = FALSE)), tmp)
+# Run the test suite; gradeR will generate results.json
+calcGradesForGradescope(student_in, tests_path)
 
-# Run gradeR
-calcGradesForGradescope(tmp, tests_path)
-
-# Minimal post-step:
-# If gradeR already wrote to /autograder/results, do nothing.
-# Else if results.json is in CWD, copy it once.
+# Fallback copy if gradeR wrote results.json to CWD instead of /autograder/results
 if (!file.exists(results_dst) && file.exists("results.json")) {
   file.copy("results.json", results_dst, overwrite = TRUE)
 }

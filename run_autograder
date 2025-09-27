@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -e
+
 echo ">>> run_autograder: start"
+cd /autograder/submission
 
-echo ">>> ensure results dir"
-mkdir -p /autograder/results
-
-echo ">>> copy hidden resources into submission"
-cp /autograder/source/answers.RDS    /autograder/submission/ || true
-cp /autograder/source/HW05data.RData /autograder/submission/ || true
-ls -lah /autograder/submission || true
-
-echo ">>> run Rscript"
+# run grader
 Rscript /autograder/source/grade.R
 
-echo ">>> run_autograder: done"
+#
+if [ -f results.json ]; then
+  mv results.json /autograder/results/results.json
+fi
+
+echo ">>> done"

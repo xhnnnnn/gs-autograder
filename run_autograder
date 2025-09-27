@@ -7,7 +7,7 @@ mkdir -p /autograder/results
 
 cp -f /autograder/source/answers.RDS /autograder/submission/
 
-Rscript /autograder/source/grade.R
+Rscript /autograder/source/grade.R || true
 
 if [ -f /autograder/submission/results.json ]; then
   mv /autograder/submission/results.json /autograder/results/results.json

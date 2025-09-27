@@ -1,29 +1,41 @@
 suppressPackageStartupMessages({ library(testthat) })
 
-answers <- readRDS("answers.RDS")
-student_file <- Sys.getenv("GS_STUDENT_FILE", "HW06_TidyPart02.R")
+# Load the official answers from /autograder/source
+answers <- readRDS(file.path("/autograder/source", "answers.RDS"))
 
+# Get the student script path from environment variable
+student_file <- Sys.getenv("GS_STUDENT_FILE", "")
+stopifnot(nzchar(student_file), file.exists(student_file))
+
+# Helper: check if a string is present in the student script
 expect_string_is_in_Rscript <- function(string) {
   test_that(paste(string, "is used (visible)"), {
-    file_content <- student_file |>
-      readLines(warn = FALSE) |>
+    file_content <- readLines(student_file, warn = FALSE) |>
       paste(collapse = "\n")
     expect_true(grepl(string, file_content, fixed = TRUE))
   })
 }
 
+# Helper: collect all aes variables from a ggplot object
 .all_aes_vars <- function(p) {
   amap <- as.list(p$mapping)
-  for (ly in p$layers) amap <- utils::modifyList(amap, as.list(ly$mapping))
+  for (ly in p$layers) {
+    amap <- utils::modifyList(amap, as.list(ly$mapping))
+  }
   lapply(amap, function(e) if (is.null(e)) character(0) else all.vars(rlang::get_expr(e)))
 }
 
+# Null-coalescing operator
 `%||%` <- function(a, b) if (is.null(a)) b else a
+
+# Helper: test if a ggplot has a specific variable mapped to an aesthetic
 expect_has_aes_var <- function(p, aes_name, var, msg = NULL) {
   vars <- .all_aes_vars(p)
   ok <- var %in% (vars[[aes_name]] %||% character(0))
   expect_true(ok, msg %||% sprintf("aes '%s' does not use variable '%s'", aes_name, var))
 }
+
+# --- Begin tests ---
 
 test_that("script starts with metadata (visible)", {
   first_character <- substr(readLines(student_file, n = 1), 1, 1)
@@ -139,8 +151,8 @@ test_that("diamonds_for_plot has only SI1 and SI2 diamonds (visible)", {
 })
 
 expect_string_is_in_Rscript("ggplot")
-print(plot)
 
+# Do not print(plot); only assert its structure
 test_that("plot is a jitterplot (visible)", {
   expect_s3_class(plot$layers[[1]]$geom, "GeomPoint")
   pos <- plot$layers[[1]]$position

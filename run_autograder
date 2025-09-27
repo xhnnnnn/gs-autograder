@@ -1,18 +1,23 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/usr/bin/env Rscript
+suppressPackageStartupMessages(library(gradeR))
 
-echo ">>> run_autograder: start"
+# Always run inside the submission directory
+setwd("/autograder/submission")
 
-mkdir -p /autograder/results
+# Adjust file names for your assignment
+student_in  <- "HW06_TidyPart02.R"
+tests_path  <- "/autograder/source/tests.R"
+results_dst <- "/autograder/results/results.json"
 
-cp -f /autograder/source/answers.RDS /autograder/submission/
+stopifnot(file.exists(student_in), file.exists(tests_path))
 
-Rscript /autograder/source/grade.R || true
+# Pass student file path to tests if needed
+Sys.setenv(GS_STUDENT_FILE = normalizePath(student_in, winslash = "/", mustWork = TRUE))
 
-if [ -f /autograder/submission/results.json ]; then
-  mv /autograder/submission/results.json /autograder/results/results.json
-elif [ -f results.json ]; then
-  mv results.json /autograder/results/results.json
-fi
+# Run the test suite; gradeR will generate results.json
+calcGradesForGradescope(student_in, tests_path)
 
-echo ">>> done"
+# Fallback copy in case gradeR writes to CWD
+if (!file.exists(results_dst) && file.exists("results.json")) {
+  file.copy("results.json", results_dst, overwrite = TRUE)
+}

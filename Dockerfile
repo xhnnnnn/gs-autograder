@@ -5,7 +5,10 @@ RUN apt-get update && \
       r-base r-base-dev libcurl4-openssl-dev libssl-dev libxml2-dev && \
     rm -rf /var/lib/apt/lists/*
 
-RUN R -q -e 'install.packages(c("gradeR","testthat","jsonlite"), repos="https://cloud.r-project.org")'
+# Install required R packages
+RUN R -e 'install.packages(c("remotes"), repos="https://cloud.r-project.org")' && \
+    R -e 'install.packages(c("gradeR","testthat","tidyverse","ggplot2","dplyr","rlang"), repos="https://cloud.r-project.org")'
+
 
 WORKDIR /autograder
 COPY source /autograder/source

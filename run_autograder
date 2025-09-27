@@ -11,6 +11,6 @@ cp /autograder/source/HW05data.RData /autograder/submission/ || true
 ls -lah /autograder/submission || true
 
 echo ">>> run Rscript"
-Rscript /autograder/source/grade.R
+Rscript /autograder/source/grade.R || true
 
 echo ">>> run_autograder: done"

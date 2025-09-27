@@ -1,14 +1,17 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
 echo ">>> run_autograder: start"
-cd /autograder/submission
 
-# run grader
+mkdir -p /autograder/results
+
+cp -f /autograder/source/answers.RDS /autograder/submission/
+
 Rscript /autograder/source/grade.R
 
-#
-if [ -f results.json ]; then
+if [ -f /autograder/submission/results.json ]; then
+  mv /autograder/submission/results.json /autograder/results/results.json
+elif [ -f results.json ]; then
   mv results.json /autograder/results/results.json
 fi
 

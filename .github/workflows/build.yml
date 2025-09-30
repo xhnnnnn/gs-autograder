@@ -25,5 +25,4 @@ jobs:
           context: .
           push: true
           tags: |
-            xhnnnnn/gs-autograder:latest
             xhnnnnn/gs-autograder:hw6

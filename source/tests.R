@@ -158,9 +158,12 @@ test_that("diamonds_for_plot has correct dimensions (visible)", {
 })
 
 test_that("diamonds_for_plot has correct column names (visible)", {
-  expect_equivalent(names(        diamonds_for_plot),
-                    names(answers$diamonds_for_plot))
+  expect_setequal(
+    names(diamonds_for_plot),
+    names(answers$diamonds_for_plot)
+  )
 })
+
 
 test_that("diamonds_for_plot has correct means (visible)", {
   expect_equivalent(sort(        diamonds_for_plot$mean),

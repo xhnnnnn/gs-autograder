@@ -1,7 +1,7 @@
 name: build-and-push
 on:
   push:
-    branches: [ main, hw6 ]
+    branches: [ main ]
   workflow_dispatch: {}
 jobs:
   build:
@@ -25,4 +25,4 @@ jobs:
           context: .
           push: true
           tags: |
-            xhnnnnn/gs-autograder:hw6
+            xhnnnnn/gs-autograder:hw7

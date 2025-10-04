@@ -54,7 +54,8 @@ expect_string_is_in_Rscript <- function(string) {
 # This avoids false negatives when later layers override earlier ones.
 expect_has_aes_var <- function(p, aes_name, var, msg = NULL) {
   vars_used <- .all_aes_vars(p)
-  used <- vars_used[[aes_name]] %||% character(0)
+  used <- vars_used[[aes_name]]
+if (is.null(used)) used <- character(0)
   
   testthat::expect_true(
     var %in% used,
@@ -95,10 +96,6 @@ test_that("shuttle has correct column names (visible)", {
 test_that("shuttle has TempC calculated correctly (visible)", {
   expect_equal(shuttle$TempC, 5/9 * (shuttle$Temp - 32) )
 })
-
-
-
-print(shuttle_plot)
 
 test_that("shuttle_plot is a scatterplot (visible)", {
   expect_s3_class(shuttle_plot$layers[[1]]$geom, "GeomPoint")
@@ -176,12 +173,6 @@ test_that("rex_summary has correct column names (visible)", {
   expect_setequal(names(rex_summary), names(answers$rex_summary))
 })
 
-
-
-
-
-print(rex_plot)
-
 test_that("rex_plot is a jitterplot (visible)", {
   expect_s3_class(rex_plot$layers[[1]]$geom, "GeomPoint")
 })
@@ -252,10 +243,6 @@ test_that("grazer$Treat is a factor (visible)", {
 test_that("grazer$Treat is in the proper order (visible)", {
   expect_equivalent(levels(grazer$Treat), c("C","f","fF","L","Lf","LfF"))
 })
-
-
-
-print(grazer_plot)
 
 test_that("grazer_plot is a scatterplot (visible)", {
   expect_s3_class(grazer_plot$layers[[1]]$geom, "GeomPoint")
@@ -415,13 +402,6 @@ test_that("WorldPhones_transformed has correct dimensions (visible)", {
 test_that("WorldPhones_transformed has correct column names (visible)", {
   expect_setequal(names(WorldPhones_transformed), names(answers$WorldPhones_transformed))
 })
-
-
-
-
-
-
-print(WorldPhones_plot)
 
 test_that("WorldPhones_plot is a line plot (visible)", {
   expect_s3_class(WorldPhones_plot$layers[[1]]$geom, "GeomLine")

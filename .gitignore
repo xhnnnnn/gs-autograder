@@ -5,7 +5,9 @@
 .Ruserdata
 .DS_Store
 Thumbs.db
+.dockerignore
 
 # Local grading artifacts
 local_submit/
 results/
+submission/

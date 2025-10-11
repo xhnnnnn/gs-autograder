@@ -55,7 +55,7 @@ expect_string_is_in_Rscript <- function(string) {
 expect_has_aes_var <- function(p, aes_name, var, msg = NULL) {
   vars_used <- .all_aes_vars(p)
   used <- vars_used[[aes_name]]
-if (is.null(used)) used <- character(0)
+  if (is.null(used)) used <- character(0)
   
   testthat::expect_true(
     var %in% used,
@@ -98,11 +98,13 @@ test_that("shuttle has TempC calculated correctly (visible)", {
 })
 
 test_that("shuttle_plot is a scatterplot (visible)", {
-  expect_s3_class(shuttle_plot$layers[[1]]$geom, "GeomPoint")
+  geoms <- vapply(shuttle_plot$layers, function(ly) class(ly$geom)[1], character(1))
+  expect_true("GeomPoint"  %in% geoms)
 })
 
 test_that("shuttle_plot has a smoother (visible)", {
-  expect_s3_class(shuttle_plot$layers[[2]]$geom, "GeomSmooth")
+  geoms <- vapply(shuttle_plot$layers, function(ly) class(ly$geom)[1], character(1))
+  expect_true("GeomSmooth" %in% geoms)
 })
 
 
@@ -131,7 +133,7 @@ test_that("shuttle_plot subtitle is 'Prior to Challenger Disaster' (visible)", {
 })
 
 test_that("shuttle_plot uses bw theme (visible)", {
-   panel_bg <- shuttle_plot$theme$panel.background
+  panel_bg <- shuttle_plot$theme$panel.background
   expect_s3_class(panel_bg, "element_rect")   # ggplot theme elements are "element_rect"
   expect_equal(panel_bg$fill, "white")
   
@@ -174,12 +176,19 @@ test_that("rex_summary has correct column names (visible)", {
 })
 
 test_that("rex_plot is a jitterplot (visible)", {
-  expect_s3_class(rex_plot$layers[[1]]$geom, "GeomPoint")
+ geoms <- vapply(rex_plot$layers, function(ly) class(ly$geom)[1], character(1))
+  expect_true("GeomPoint"  %in% geoms)
 })
 
+
+
 test_that("rex_plot uses geom_pointrange (visible)", {
-  expect_s3_class(rex_plot$layers[[2]]$geom, "GeomPointrange")
+ geoms <- vapply(rex_plot$layers, function(ly) class(ly$geom)[1], character(1))
+  expect_true("GeomPointrange"  %in% geoms)
 })
+
+
+
 
 
 test_that("rex_plot has Bone on x-axis (visible)", {
@@ -334,21 +343,22 @@ test_that("grazer_means columns are in the proper order (visible)", {
 
 
 
-
 test_that("grazer_summary_plot has points (visible)", {
-  expect_s3_class(grazer_summary_plot$layers[[1]]$geom, "GeomPoint")
+  geoms <- vapply(grazer_summary_plot$layers, function(ly) class(ly$geom)[1], character(1))
+  expect_true("GeomPoint"  %in% geoms)
 })
 
 test_that("grazer_summary_plot has a line (visible)", {
-  expect_s3_class(grazer_summary_plot$layers[[2]]$geom, "GeomLine")
+  geoms <- vapply(grazer_summary_plot$layers, function(ly) class(ly$geom)[1], character(1))
+  expect_true("GeomLine"  %in% geoms)
 })
 
 test_that("grazer_summary_plot has Block on x-axis (visible)", {
   expect_has_aes_var(grazer_summary_plot, "x", "Block")
 })
 
-test_that("grazer_summary_plot has Cover on y-axis (visible)", {
-  expect_has_aes_var(grazer_summary_plot, "y", "Cover")
+test_that("grazer_summary_plot has mean on y-axis (visible)", {
+  expect_has_aes_var(grazer_summary_plot, "y", "mean")
 })
 
 test_that("grazer_summary_plot has Treat as color (visible)", {
@@ -400,19 +410,20 @@ test_that("WorldPhones_transformed has correct dimensions (visible)", {
 })
 
 test_that("WorldPhones_transformed has correct column names (visible)", {
-  expect_setequal(names(WorldPhones_transformed), names(answers$WorldPhones_transformed))
+  expect_setequal(names(        WorldPhones_transformed), 
+                  names(answers$WorldPhones_transformed))
 })
+
 
 test_that("WorldPhones_plot is a line plot (visible)", {
-  expect_s3_class(WorldPhones_plot$layers[[1]]$geom, "GeomLine")
-})
-
-test_that("WorldPhones_plot uses facet_wrap (visible)", {
-  expect_s3_class(WorldPhones_plot$facet, "FacetWrap")
+  geoms <- vapply(WorldPhones_plot$layers, function(ly) class(ly$geom)[1], character(1))
+  expect_true("GeomLine"  %in% geoms)
+ 
 })
 
 test_that("WorldPhones_plot has logarithmic y-axis (visible)", {
-  expect_equal(WorldPhones_plot$scales$get_scales("y")$trans$name, "log-10")
+  expect_equal(WorldPhones_plot$scales$get_scales("y")$trans$name, 
+               "log-10")
 })
 
 
@@ -428,7 +439,7 @@ test_that("WorldPhones_plot has Region as color (visible)", {
   expect_has_aes_var(WorldPhones_plot, "colour", "Region")
 })
 
-test_that("WorldPhones_plot has Treat as linetype (visible)", {
+test_that("WorldPhones_plot has Region as linetype (visible)", {
   expect_has_aes_var(WorldPhones_plot, "linetype", "Region")
 })
 

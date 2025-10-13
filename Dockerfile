@@ -12,7 +12,7 @@ RUN apt-get update && \
 
 
 # --- Install R packages ---
-RUN Rscript -e "install.packages(c('gradeR','testthat','jsonlite','ragg','tidyverse'), repos='https://cloud.r-project.org')"
+RUN Rscript -e "install.packages(c('gradeR','testthat'))"
 
 WORKDIR /autograder
 

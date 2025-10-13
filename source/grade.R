@@ -5,7 +5,7 @@ suppressPackageStartupMessages(library(gradeR))
 suppressPackageStartupMessages(library(jsonlite))
 
 RESULTS_JSON <- "/autograder/results/results.json"
-STUDENT_FILE <- "HW07_TidyPart03.R"
+STUDENT_FILE <- "HW08_ProgrammingPart01.R"
 TESTS_FILE   <- "/autograder/source/tests.R"
 SUB_FILE     <- file.path("/autograder/submission", STUDENT_FILE)  # student script path
 SRC_DIR      <- "/autograder/source"                                # grading working directory

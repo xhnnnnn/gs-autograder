@@ -4,6 +4,19 @@ Rscript <- "HW07_TidyPart03.R"
 answers <- readRDS("answers.RDS")
 
 
+# robust label normalization: make dashes uniform, collapse spaces
+`%||%` <- function(a, b) if (!is.null(a)) a else b
+
+normalize_label <- function(x) {
+  x <- enc2utf8(x %||% "")
+  # unify various dashes/hyphens to ASCII '-'
+  x <- gsub("[\u2010\u2011\u2012\u2013\u2014\u2015\u2212]", "-", x, perl = TRUE)
+  # collapse multiple spaces and NBSP to single space
+  x <- gsub("[\u00A0\\s]+", " ", x, perl = TRUE)
+  trimws(x)
+}
+
+
 expect_string_is_in_Rscript <- function(string) {
   test_that(paste(string, "is used (visible)"), {
     # Read the entire file into one string
@@ -120,12 +133,18 @@ test_that("shuttle_plot x-axis label is 'Temperature (C)' (visible)", {
   expect_equal(shuttle_plot$labels$x, "Temperature (C)")
 })
 
-test_that("shuttle_plot y-axis label is 'Number of O-ring Incidents' (visible)", {
-  expect_equal(shuttle_plot$labels$y, "Number of O-ring Incidents")
+test_that("shuttle_plot y-axis label OK (visible)", {
+  expect_equal(
+    normalize_label(shuttle_plot$labels$y),
+    "Number of O-ring Incidents"
+  )
 })
 
-test_that("shuttle_plot title is 'Shuttle O-ring Incidents by Temperature' (visible)", {
-  expect_equal(shuttle_plot$labels$title, "Shuttle O-ring Incidents by Temperature")
+test_that("shuttle_plot title OK (visible)", {
+  expect_equal(
+    normalize_label(shuttle_plot$labels$title),
+    "Shuttle O-ring Incidents by Temperature"
+  )
 })
 
 test_that("shuttle_plot subtitle is 'Prior to Challenger Disaster' (visible)", {

@@ -6,11 +6,11 @@ echo ">>> ensure results dir"
 mkdir -p /autograder/results
 
 echo ">>> copy student submission"
-cp /autograder/submission/HW08_ProgrammingPart01.R /autograder/source/HW08_ProgrammingPart01.R
+cp /autograder/submission/HW09_ProgrammingPart02.R /autograder/source/HW09_ProgrammingPart02.R
 
 cd /autograder/source
 
 echo ">>> run Rscript"
-LC_ALL= Rscript grade.R > /autograder/results/log.txt 2>&1 || true
+LC_ALL= Rscript grade.R > /autograder/results/log.txt 2>&1
 
 echo ">>> run_autograder: done"

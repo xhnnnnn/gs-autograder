@@ -1,6 +1,6 @@
 library(testthat)
 
-Rscript <- "HW08_ProgrammingPart01.R"
+Rscript <- "HW09_ProgrammingPart02.R"
 
 
 # ------------------------------------------------------------------------------
@@ -15,181 +15,260 @@ test_that("script starts with metadata (visible)", {
 })
 
 
-# ------------------------------------------------------------------------------
-# Object type
-# ------------------------------------------------------------------------------
-test_that("is_logical returns TRUE for logicals (visible)", {
-  # Logicals
-  expect_true(is_logical(TRUE))
-  expect_true(is_logical(rep(FALSE, 2)))
-  expect_true(is_logical(matrix(c(TRUE, FALSE), 1, 2)))
+
+
+test_that("classify_number identifies negative numbers (visible)", {
+  expect_equal(classify_number(runif(1, -100000, 0)), "Negative")
 })
 
-test_that("is_logical returns FALSE for non-logicals (visible)", {
-  # Not logicals
-  expect_false(is_logical(0))
-  expect_false(is_logical(LETTERS))
-  expect_false(is_logical(matrix(1:10, 2, 5)))
+test_that("classify_number identifies zero (visible)", {
+  expect_equal(classify_number(0), "Zero")
 })
 
-
-test_that("is_numeric returns TRUE for numerics (visible)", {
-  # numerics
-  expect_true(is_numeric(1.5))
-  expect_true(is_numeric(rnorm(2)))
-  expect_true(is_numeric(matrix(runif(10), 2, 5)))
+test_that("classify_number identifies zero (visible)", {
+  expect_equal(classify_number(runif(1, 0, 10)), "Small")
 })
 
-test_that("is_numeric returns FALSE for non-numerics (visible)", {
-  # Not numerics
-  expect_false(is_numeric(TRUE))
-  expect_false(is_numeric(LETTERS))
-  expect_false(is_numeric(matrix(LETTERS[1:6], 2, 3)))
-})
-
-
-test_that("is_character returns TRUE for characters (visible)", {
-  # characters
-  expect_true(is_character("1.5"))
-  expect_true(is_character(LETTERS[1:5]))
-  expect_true(is_character(matrix(LETTERS[1:6], 2, 3)))
-})
-
-test_that("is_character returns FALSE for non-characters (visible)", {
-  # Not characters
-  expect_false(is_character(TRUE))
-  expect_false(is_character(rnorm(2)))
-  expect_false(is_character(matrix(runif(6), 2, 3)))
-})
-
-# ------------------------------------------------------------------------------
-# Object dimension
-# ------------------------------------------------------------------------------
-
-test_that("vector_length returns correct length for scalars, vectors, and lists (visible)", {
-  expect_equal(vector_length(1), 1)
-  expect_equal(vector_length(rnorm(2)), 2)
-  expect_equal(vector_length(LETTERS[1:6]), 6)
-  expect_equal(vector_length(list(1,2)), 2)
-})
-
-
-
-test_that("matrix_dimension returns correct dimensions for matrices and data.frames (visible)", {
-  expect_equal(matrix_dimension(matrix(NA, 1, 1)),                  c(1, 1))
-  expect_equal(matrix_dimension(rbind(rnorm(2), runif(2))),         c(2, 2))
-  expect_equal(matrix_dimension(cbind(LETTERS[1:3], LETTERS[4:6])), c(3, 2))
-  expect_equal(matrix_dimension(ToothGrowth),                       c(60, 3))
+test_that("classify_number identifies zero (visible)", {
+  expect_equal(classify_number(10), "Large")
+  expect_equal(classify_number(runif(1, 10,1e6)), "Large")
 })
 
 
 
 
-# ------------------------------------------------------------------------------
-# Functions
-# ------------------------------------------------------------------------------
-
-# convert_celsius_to_fahrenheit
-
-test_that("convert_celsius_to_fahrenheit has argument named `temp` (visible)", {
-  expect_equal(names(formals(convert_celsius_to_fahrenheit)), "temp")
+test_that("filter_even_positive returns correct values (visible)", {
+  expect_equal(filter_even_positive(c(-2, 0, 3, 4, 6, -8)), c(4, 6))
+  expect_equal(filter_even_positive(c(2, 4, 6)), c(2, 4, 6))
 })
 
-test_that("convert_celsius_to_fahrenheit calculates correctly (visible)", {
-  random_temps <- runif(10, -40, 100)
-  c2f <- function(c) return(c * 9/5 + 32)
-  expect_equal(convert_celsius_to_fahrenheit(random_temps[1]), 
-               c2f(random_temps[1]))
-  expect_equal(convert_celsius_to_fahrenheit(random_temps   ),
-               c2f(random_temps   ))
+test_that("filter_even_positive returns empty numeric if no even, positive (visible)", {
+  expect_equal(filter_even_positive(c(1, 3, 5)), numeric(0))  # No even positives
+  expect_equal(filter_even_positive(numeric(0)), numeric(0))  # Empty input
 })
 
 
-# add_even
 
-test_that("add_even has argument named `n` (visible)", {
-  expect_equal(names(formals(add_even)), "n")
+
+test_that("assign_grade assigns As correctly (visible)", {
+  expect_equal(assign_grade(90), "A")
+  expect_equal(assign_grade(runif(1, 90, 100)), "A")
 })
 
-test_that("add_even calculates correctly (visible)", {
-  random_n <- rpois(5, 20)
-  my_add_even <- function(n) sum(seq(0, n, by = 2))
-  for (i in 1:length(random_n)) {
-    expect_equal(   add_even(random_n[i]), 
-                 my_add_even(random_n[i]))
-  }
+test_that("assign_grade assigns Bs correctly (visible)", {
+  expect_equal(assign_grade(80), "B")
+  expect_equal(assign_grade(runif(1, 80, 90)), "B")
 })
 
-
-# calculate_summary_statistics
-
-test_that("calculate_summary_statistics has argument named `v` (visible)", {
-  expect_equal(names(formals(calculate_summary_statistics)), "v")
+test_that("assign_grade assigns Cs correctly (visible)", {
+  expect_equal(assign_grade(70), "C")
+  expect_equal(assign_grade(runif(1, 70, 80)), "C")
 })
 
-test_that("calculate_summary_statistics output has correct names (visible)", {
-  expect_setequal(names(calculate_summary_statistics(1:5)),
-                  c("n", "mean", "sd", "lb", "ub"))
+test_that("assign_grade assigns As correctly (visible)", {
+  expect_equal(assign_grade(60), "D")
+  expect_equal(assign_grade(runif(1, 60, 70)), "D")
 })
 
-test_that("calculate_summary_statistics calculates correctly (visible)", {
-  my_calculate_summary_statistics <- function(v) {
-    l <- list(
-      n    = length(v),
-      mean = mean(v),
-      sd   = sd(v)
-    )
-    l$lb = l$mean - 2 * l$sd / sqrt(l$n)
-    l$ub = l$mean + 2 * l$sd / sqrt(l$n)
-    
-    return(l)
-  }
-  
-  for (i in 1:5) {
-    v <- rnorm(rpois(1, 10)+1)
-    expect_equal(   calculate_summary_statistics(v),
-                 my_calculate_summary_statistics(v))
-  }
+test_that("assign_grade assigns As correctly (visible)", {
+  expect_equal(assign_grade(runif(1, 0, 60)), "F")
 })
 
 
-# summarize_data.frame_variable
 
-test_that("summarize_data.frame_variable has arguments named `df` and `var` (visible)", {
-  expect_equal(names(formals(summarize_data.frame_variable)), 
-               c("df","var"))
+
+
+test_that("simple_calculator adds correctly (visible)", {
+  x <- rnorm(1); y <- rnorm(1)
+  expect_equal(simple_calculator(x, y, "add"), x+y)
 })
 
-test_that("summarize_data.frame_variable calculates correctly (visible)", {
-  d <- data.frame(
-    var1 = 1:10,
-    var2 = runif(10),
-    var3 = rnorm(10)
+test_that("simple_calculator subtracts correctly (visible)", {
+  x <- rnorm(1); y <- rnorm(1)
+  expect_equal(simple_calculator(x, y, "subtract"), x-y)
+})
+
+test_that("simple_calculator multiplies correctly (visible)", {
+  x <- rnorm(1); y <- rnorm(1)
+  expect_equal(simple_calculator(x, y, "multiply"), x*y)
+})
+
+test_that("simple_calculator divides correctly (visible)", {
+  x <- rnorm(1); y <- rnorm(1)
+  expect_equal(simple_calculator(x, y, "divide"), x/y)
+})
+
+test_that("simple_calculator returns Error if invalid operation (visible)", {
+  expect_error(simple_calculator(5, 3, "mod"), "Invalid operation")
+})
+
+
+
+
+test_that("count_conditions counts positives correctly (visible)", {
+  result <- count_conditions(c(1, -2, 0, NA, 5, NA, -3))
+  expect_equal(result$positives, 2)
+})
+
+test_that("count_conditions counts negatives correctly (visible)", {
+  result <- count_conditions(c(1, -2, 0, NA, 5, NA, -3))
+  expect_equal(result$negatives, 2)
+})
+
+test_that("count_conditions counts zeros correctly (visible)", {
+  result <- count_conditions(c(1, -2, 0, NA, 5, NA, -3))
+  expect_equal(result$zeros, 1)
+})
+
+test_that("count_conditions counts NAs correctly (visible)", {
+  result <- count_conditions(c(1, -2, 0, NA, 5, NA, -3))
+  expect_equal(result$nas, 2)
+})
+
+
+
+
+
+test_that("summarize_scores returns correct summary (visible)", {
+  df <- data.frame(
+    name = c("Alice", "Bob", "Charlie", "Diana", "Eli"),
+    score = c(88, 92, 67, 75, 59),
+    passed = c(TRUE, TRUE, FALSE, TRUE, FALSE)
   )
   
-  d$var1[1] <- NA
-  d$var2[2] <- NA
-  d$var3[3] <- NA
+  result <- summarize_scores(df)
   
-  expect_equal(summarize_data.frame_variable(d, "var1"), mean(d$var1, na.rm = TRUE))
-  expect_equal(summarize_data.frame_variable(d, "var2"), mean(d$var2, na.rm = TRUE))
-  expect_equal(summarize_data.frame_variable(d, "var3"), mean(d$var3, na.rm = TRUE))
+  expect_equal(result$num_students, 5)
+  expect_equal(result$num_passed, 3)
+  expect_equal(result$average_score, mean(c(88, 92, 67, 75, 59)))
+  expect_equal(result$highest_score, "Bob")
+})
+
+
+test_that("summarize_scores handles NA values (visible)", {
+  df <- data.frame(
+    name = c("Alice", "Bob", "Charlie"),
+    score = c(88, NA, 67),
+    passed = c(TRUE, NA, FALSE)
+  )
+
+  result <- summarize_scores(df)
+
+  expect_equal(result$num_students, 3)
+  expect_equal(result$num_passed, 1)  # Only Alice passed
+  expect_equal(result$average_score, mean(c(88, 67)))
+  expect_equal(result$highest_score, "Alice")
+})
+
+
+test_that("summarize_scores works with empty data.frame (visible)", {
+  df <- data.frame(name = character(0), score = numeric(0), passed = logical(0))
+  
+  result <- summarize_scores(df)
+  
+  expect_equal(result$num_students, 0)
+  expect_equal(result$num_passed, 0)
+  expect_true(is.nan(result$average_score))  # mean of empty vector is NaN
+  expect_equal(result$highest_score, character(0))
 })
 
 
 
-test_that("get_regression_coefficients has arguments named `y` and `x` (visible)", {
-  expect_equal(names(formals(get_regression_coefficients)),
-               c("y","x"))
+test_that("summarize_by_group has correct parameters (visible)", {
+    expect_equal(names(formals(summarize_by_group)),
+                 c("df","var", "group"))
+})
+
+test_that("summarize_by_group output is a data.frame (visible)", {
+  expect_true(is.data.frame(summarize_by_group(ToothGrowth, "len",    "supp")))
+  expect_true(is.data.frame(summarize_by_group(ChickWeight, "weight", "Chick")))
+})
+
+test_that("summarize_by_group output has correct column names (visible)", {
+  expect_setequal(colnames(summarize_by_group(ToothGrowth, "len", "supp")), 
+                  c("supp", "n", "mean", "sd"))
+  expect_setequal(colnames(summarize_by_group(ChickWeight, "weight", "Chick")), 
+                  c("Chick", "n", "mean", "sd"))
 })
 
 
-test_that("get_regression_coefficients returns intercept and slope (visible)", {
-  n <- rpois(1, 20)
-  y <- rnorm(n)
-  x <- rnorm(n)
-
-  expect_equal(get_regression_coefficients(y, x), coef(lm(y~x)))
+test_that("summarize_by_group calculates n correctly (visible)", {
+  expect_equal(summarize_by_group(ToothGrowth, "len", "supp")$n, c(30, 30))
+  expect_equal(summarize_by_group(ChickWeight[ChickWeight$Chick %in% 1:3, ], 
+                                  "weight", "Chick")$n,
+               c(12, 12, 12))
 })
 
 
+test_that("summarize_by_group calculates mean correctly (visible)", {
+  expect_equal(summarize_by_group(ToothGrowth, "len", "supp")$mean,
+               c(20.66333, 16.96333), tolerance = .001)
+})
+
+test_that("summarize_by_group calculates sd correctly (visible)", {
+  expect_equal(summarize_by_group(ToothGrowth, "len", "supp")$sd,
+                  c(6.605561, 8.266029), tolerance = .001)
+})
+
+
+
+
+
+test_that("modify_plot has correct parameters (visible)", {
+  expect_equal(names(formals(modify_plot)),
+               c("g","log_x", "log_y", "x_label", "y_label", "title"))
+})
+
+test_that("modify_plot has correct output for log_x input (visible)", {
+  g <- ggplot(data.frame(x = runif(10), y = runif(10)),
+                         aes(x=x, y=y)) + 
+                geom_point()
+  g_log_x <- g + scale_x_log10()
+  
+  expect_equal(ggplot_build(modify_plot(g, log_x = TRUE))$layout$panel_scales_x[[1]]$trans$name, 
+               "log-10")
+  expect_equal(ggplot_build(modify_plot(g_log_x, log_x = FALSE))$layout$panel_scales_x[[1]]$trans$name, 
+               "identity")
+})
+
+
+test_that("modify_plot has correct output for log_y input (visible)", {
+  g <- ggplot(data.frame(x = runif(10), y = runif(10)),
+              aes(x=x, y=y)) + 
+    geom_point()
+  g_log_y <- g + scale_y_log10()
+  
+  expect_equal(ggplot_build(modify_plot(g, log_y = TRUE))$layout$panel_scales_y[[1]]$trans$name, 
+               "log-10")
+  expect_equal(ggplot_build(modify_plot(g_log_y, log_y = FALSE))$layout$panel_scales_y[[1]]$trans$name, 
+               "identity")
+})
+
+
+test_that("modify_plot has correct output for x_lab input (visible)", {
+  g <- ggplot(data.frame(x = runif(10), y = runif(10)),
+              aes(x=x, y=y)) + 
+    geom_point()
+  
+  random_lab <- paste0(sample(LETTERS, 10), collapse = "")
+  expect_equal(modify_plot(g, x_lab = random_lab)$labels$x, random_lab)
+})
+
+test_that("modify_plot has correct output for y_lab input (visible)", {
+  g <- ggplot(data.frame(x = runif(10), y = runif(10)),
+              aes(x=x, y=y)) + 
+    geom_point()
+  
+  random_lab <- paste0(sample(LETTERS, 10), collapse = "")
+  expect_equal(modify_plot(g, y_lab = random_lab)$labels$y, random_lab)
+})
+
+
+test_that("modify_plot has correct output for title input (visible)", {
+  g <- ggplot(data.frame(x = runif(10), y = runif(10)),
+              aes(x=x, y=y)) + 
+    geom_point()
+  
+  random_lab <- paste0(sample(LETTERS, 10), collapse = "")
+  expect_equal(modify_plot(g, title = random_lab)$labels$title, random_lab)
+})

@@ -12,7 +12,7 @@ RUN apt-get update && \
 
 
 # --- Install R packages ---
-RUN Rscript -e "install.packages(c('gradeR','testthat'))"
+RUN Rscript -e "install.packages(c('gradeR','testthat','ggplot2'))"
 
 WORKDIR /autograder
 
